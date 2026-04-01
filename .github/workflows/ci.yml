@@ -23,7 +23,9 @@ jobs:
         run: cd backend && npm install
 
       - name: Run ESLint
-        run: cd backend && npx eslint .
+        run: cd backend && npx eslint . --config .eslintrc.json
+        env:
+          ESLINT_USE_FLAT_CONFIG: false
 
       - name: Run Jest tests
         run: cd backend && npm test
