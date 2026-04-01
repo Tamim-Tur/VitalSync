@@ -1,0 +1,6 @@
+node_modules
+npm-debug.log*
+.git
+Dockerfile
+.dockerignore
+# On retire test/ d'ici pour que Docker puisse exécuter les tests pendant le build

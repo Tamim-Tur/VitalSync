@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # Base de données PostgreSQL
+  database:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - vitalsync-network
+
+  # Backend Node.js
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: database
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    depends_on:
+      - database
+    networks:
+      - vitalsync-network
+
+  # Frontend Nginx
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - vitalsync-network
+
+# Réseau personnalisé (Justification : Isolation des conteneurs du reste du réseau hôte)
+networks:
+  vitalsync-network:
+    driver: bridge
+
+# Volume persistant (Justification : Garder les données même si les conteneurs sont supprimés)
+volumes:
+  postgres_data:
