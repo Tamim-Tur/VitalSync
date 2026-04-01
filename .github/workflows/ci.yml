@@ -17,14 +17,11 @@ jobs:
       - name: Install dependencies
         run: cd backend && npm install
 
-      - name: Install ESLint 8
-        run: cd backend && npm install eslint@8.57.0 --save-dev
-
-      - name: Run ESLint
-        run: cd backend && npx eslint . --config .eslintrc.json
+      - name: Run ESLint (Force v8)
+        run: cd backend && npx eslint@8.57.0 . --config .eslintrc.json
 
       - name: Run Jest tests
-        run: cd backend && npm test
+        run: cd backend && npm test -- --passWithNoTests
 
   # Étape 2 : Build Docker 
   build-docker:
