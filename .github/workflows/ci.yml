@@ -14,18 +14,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: Install dependencies
         run: cd backend && npm install
 
+      - name: Install ESLint 8
+        run: cd backend && npm install eslint@8.57.0 --save-dev
+
       - name: Run ESLint
         run: cd backend && npx eslint . --config .eslintrc.json
-        env:
-          ESLINT_USE_FLAT_CONFIG: false
 
       - name: Run Jest tests
         run: cd backend && npm test
