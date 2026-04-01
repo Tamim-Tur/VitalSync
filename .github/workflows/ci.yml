@@ -1,0 +1,54 @@
+name: VitalSync Project CI/CD
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Étape 1 : Lint & Tests
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: cd backend && npm install
+
+      - name: Run ESLint
+        run: cd backend && npx eslint .
+
+      - name: Run Jest tests
+        run: cd backend && npm test
+
+  # Étape 2 : Build Docker 
+  build-docker:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build images (Simulé sans registry)
+        run: |
+          docker build -t vitalsync-api:${{ github.sha }} ./backend
+          docker build -t vitalsync-web:${{ github.sha }} ./frontend
+
+  # Étape 3 : Déploiement Staging
+  deploy-staging:
+    needs: build-docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health Check
+        run: |
+          # Simulation d'une vérification de santé
+          echo "Vérification de santé sur /health..."
+          # Si nous avions un serveur de test, nous ferions : curl -f http://staging:3000/health
+          exit 0
